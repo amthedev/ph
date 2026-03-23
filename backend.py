@@ -68,7 +68,18 @@ def init_db():
             FOREIGN KEY (live_id) REFERENCES lives (id)
         )
     ''')
-    
+
+    # Tabela de mensagens do chat
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS chat_messages (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id TEXT NOT NULL,
+            name TEXT NOT NULL,
+            message TEXT NOT NULL,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+
     conn.commit()
     conn.close()
 
@@ -320,6 +331,78 @@ def admin_login():
             
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
+
+# Enviar mensagem no chat
+@app.route('/api/chat/message', methods=['POST'])
+def send_chat_message():
+    try:
+        data = request.json
+        user_id = data.get('user_id', '').strip()
+        name = data.get('name', 'Anônimo').strip()[:50]
+        message = data.get('message', '').strip()[:300]
+
+        if not message or not user_id:
+            return jsonify({'success': False, 'error': 'Campos obrigatórios ausentes'}), 400
+
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute(
+            'INSERT INTO chat_messages (user_id, name, message) VALUES (?, ?, ?)',
+            (user_id, name, message)
+        )
+        msg_id = cursor.lastrowid
+        conn.commit()
+        conn.close()
+
+        return jsonify({'success': True, 'id': msg_id})
+
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+# Buscar mensagens novas (polling)
+@app.route('/api/chat/messages', methods=['GET'])
+def get_chat_messages():
+    try:
+        since_id = int(request.args.get('since', 0))
+
+        conn = get_db()
+        cursor = conn.cursor()
+
+        # Retorna apenas as últimas 100 mensagens ou mensagens após since_id
+        if since_id > 0:
+            cursor.execute(
+                'SELECT id, user_id, name, message, timestamp FROM chat_messages WHERE id > ? ORDER BY id ASC LIMIT 50',
+                (since_id,)
+            )
+        else:
+            cursor.execute(
+                'SELECT id, user_id, name, message, timestamp FROM chat_messages ORDER BY id DESC LIMIT 60'
+            )
+
+        rows = cursor.fetchall()
+        conn.close()
+
+        messages = [
+            {
+                'id': row['id'],
+                'user_id': row['user_id'],
+                'name': row['name'],
+                'message': row['message'],
+                'timestamp': row['timestamp']
+            }
+            for row in rows
+        ]
+
+        # Se pegou histórico (sem since_id), inverter para ordem cronológica
+        if since_id == 0:
+            messages = list(reversed(messages))
+
+        return jsonify({'success': True, 'messages': messages})
+
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 
 # Limpar espectadores antigos
 @app.route('/api/admin/cleanup', methods=['POST'])

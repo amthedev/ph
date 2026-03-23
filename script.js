@@ -10,7 +10,13 @@ class LiveStreamApp {
         this.peakViewers = 0;
         this.liveUrl = '';
         this.adminToken = null;
-        this.backendUrl = 'http://localhost:5000/api';
+        // URL relativa: funciona em qualquer porta quando servido pelo Flask
+        this.backendUrl = window.location.protocol === 'file:'
+            ? 'http://localhost/api'
+            : '/api';
+        this.lastMsgId = 0;
+        this.chatPollInterval = null;
+        this.backendAvailable = false;
 
         this.init();
     }
@@ -44,11 +50,83 @@ class LiveStreamApp {
     async tryLoadFromBackend() {
         try {
             const data = await this.apiRequest('/live/stats');
+            this.backendAvailable = true;
             if (data.success && data.stats.is_live) {
                 this.isLive = true;
                 this.setLiveStatus(true);
             }
-        } catch (_) { /* backend offline — ok */ }
+            // Carregar histórico do chat e começar polling
+            await this.loadChatHistory();
+            this.startChatPolling();
+        } catch (_) {
+            // Backend offline — chat funciona só localmente
+            this.addSystemMessage('Chat em modo local (backend offline)');
+        }
+    }
+
+    // =====================
+    // CHAT REAL-TIME (POLLING)
+    // =====================
+    async loadChatHistory() {
+        try {
+            const data = await this.apiRequest('/chat/messages?since=0');
+            if (data.success && data.messages.length > 0) {
+                // Limpar mensagem de boas-vindas
+                const container = document.getElementById('chatMessages');
+                container.innerHTML = '';
+                data.messages.forEach(msg => {
+                    const isMe = msg.user_id === this.currentUser;
+                    this.renderChatMessage(msg, isMe);
+                });
+                this.lastMsgId = data.messages[data.messages.length - 1].id;
+                const container2 = document.getElementById('chatMessages');
+                container2.scrollTop = container2.scrollHeight;
+            }
+        } catch (_) { /* silencioso */ }
+    }
+
+    startChatPolling() {
+        if (this.chatPollInterval) clearInterval(this.chatPollInterval);
+        this.chatPollInterval = setInterval(() => this.pollNewMessages(), 2500);
+    }
+
+    async pollNewMessages() {
+        try {
+            const data = await this.apiRequest(`/chat/messages?since=${this.lastMsgId}`);
+            if (data.success && data.messages.length > 0) {
+                data.messages.forEach(msg => {
+                    const isMe = msg.user_id === this.currentUser;
+                    this.renderChatMessage(msg, isMe);
+                });
+                this.lastMsgId = data.messages[data.messages.length - 1].id;
+                const container = document.getElementById('chatMessages');
+                container.scrollTop = container.scrollHeight;
+            }
+        } catch (_) { /* silencioso */ }
+    }
+
+    renderChatMessage(msg, isMe) {
+        const container = document.getElementById('chatMessages');
+        const div = document.createElement('div');
+        div.className = `chat-message ${isMe ? 'user' : 'other'}`;
+
+        const time = new Date(msg.timestamp).toLocaleTimeString('pt-BR', {
+            hour: '2-digit', minute: '2-digit'
+        });
+
+        div.innerHTML = `
+            <div class="msg-header">
+                <span class="msg-sender ${isMe ? 'me' : ''}">${this.escapeHtml(msg.name)}${isMe ? ' (você)' : ''}</span>
+                <span class="msg-time">${time}</span>
+            </div>
+            <div class="msg-text">${this.escapeHtml(msg.message)}</div>`;
+
+        container.appendChild(div);
+
+        // Máximo 80 mensagens visíveis
+        while (container.children.length > 80) {
+            container.removeChild(container.firstChild);
+        }
     }
 
     async adminLogin(password) {
@@ -501,27 +579,33 @@ class LiveStreamApp {
     // =====================
     // CHAT
     // =====================
-    sendMessage() {
+    async sendMessage() {
         const input = document.getElementById('messageInput');
         const text = input.value.trim();
         if (!text) return;
-
-        const name = this.currentUserName || 'Você';
-        this.addChatMessage(name, text, 'user');
         input.value = '';
 
-        // Resposta automática ocasional
-        if (Math.random() < 0.25) {
-            const fakeUsers = ['Ana', 'Carlos', 'Pedro', 'Julia', 'Marcos', 'Larissa'];
-            const responses = [
-                'Top demais! 🔥', 'Concordo!', '👏👏', 'Que massa!', 'Isso mesmo!',
-                'Ansioso pela live!', 'Eita!', 'Muito bom!', '❤️', 'Verdade!'
-            ];
-            setTimeout(() => {
-                const user = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
-                const msg = responses[Math.floor(Math.random() * responses.length)];
-                this.addChatMessage(user, msg, 'other');
-            }, 800 + Math.random() * 2000);
+        if (!this.currentUser) {
+            this.currentUser = 'user_' + Math.random().toString(36).slice(2, 11);
+            localStorage.setItem('currentUser', this.currentUser);
+        }
+
+        const name = this.currentUserName || 'Visitante';
+
+        // Tentar enviar ao backend (chat compartilhado)
+        try {
+            await this.apiRequest('/chat/message', {
+                method: 'POST',
+                body: JSON.stringify({
+                    user_id: this.currentUser,
+                    name,
+                    message: text
+                })
+            });
+            // A mensagem aparecerá via polling (pollNewMessages)
+        } catch (_) {
+            // Backend offline: exibir só localmente
+            this.addChatMessage(name, text, 'user');
         }
     }
 
