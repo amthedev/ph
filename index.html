@@ -23,8 +23,8 @@
                     <i class="fas fa-broadcast-tower"></i>
                 </div>
                 <div class="brand-text">
-                    <span class="brand-name">Minha Live</span>
-                    <span class="brand-sub">Transmissão ao vivo</span>
+                    <span class="brand-name" id="siteBrandName">Minha Live</span>
+                    <span class="brand-sub" id="siteBrandSub">Transmissão ao vivo</span>
                 </div>
             </div>
             <nav class="header-nav">
@@ -54,7 +54,7 @@
                 </div>
 
                 <div class="countdown-section">
-                    <p class="countdown-label" id="countdownLabel">Próxima Live: Hoje às 19:00</p>
+                    <p class="countdown-label" id="siteCountdownLabel">Próxima Live: Hoje às 19:00</p>
                     <div class="countdown" id="countdown">
                         <div class="time-block">
                             <span class="time-value" id="hours">00</span>
@@ -85,8 +85,8 @@
                             <div class="preview-play-btn">
                                 <i class="fas fa-play"></i>
                             </div>
-                            <h3>A live começa em breve</h3>
-                            <p>Confirme sua presença abaixo!</p>
+                            <h3 id="sitePreviewTitle">A live começa em breve</h3>
+                            <p id="sitePreviewSubtitle">Confirme sua presença abaixo!</p>
                         </div>
                     </div>
 
@@ -121,9 +121,9 @@
                     <div class="glass-card">
                         <div class="card-header-icon">
                             <i class="fas fa-users"></i>
-                            <h3>Confirme sua Presença</h3>
+                            <h3 id="sitePresenceTitle">Confirme sua Presença</h3>
                         </div>
-                        <p class="card-subtitle">Mostre que você vai estar na live!</p>
+                        <p class="card-subtitle" id="sitePresenceSubtitle">Mostre que você vai estar na live!</p>
 
                         <div class="name-input-wrapper" id="nameInputWrapper">
                             <input
@@ -164,7 +164,7 @@
                         <div class="chat-header">
                             <div class="chat-title">
                                 <i class="fas fa-comments"></i>
-                                <h3>Chat da Live</h3>
+                                <h3 id="siteChatTitle">Chat da Live</h3>
                             </div>
                             <span class="online-badge" id="chatOnline">0 online</span>
                         </div>
@@ -210,6 +210,81 @@
                 </button>
             </div>
             <div class="modal-body">
+
+                <!-- Personalizar Site -->
+                <div class="admin-section">
+                    <div class="section-title">
+                        <i class="fas fa-paint-brush"></i>
+                        <h3>Personalizar Site</h3>
+                    </div>
+
+                    <!-- Upload de imagem -->
+                    <div class="editor-field">
+                        <label class="editor-label">Imagem de fundo (preview da live)</label>
+                        <div class="upload-zone" id="uploadZone">
+                            <div class="upload-inner" id="uploadInner">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Clique ou arraste uma imagem aqui</span>
+                                <small>JPG, PNG, GIF, WEBP — qualquer tamanho</small>
+                            </div>
+                            <input type="file" id="imageUpload" accept="image/*" style="display:none;">
+                        </div>
+                        <button class="btn-remove-img" id="removeImage" style="display:none;">
+                            <i class="fas fa-trash"></i> Remover imagem
+                        </button>
+                    </div>
+
+                    <div class="editor-grid">
+                        <div class="editor-field">
+                            <label class="editor-label">Nome do site</label>
+                            <input type="text" class="admin-input" data-site="siteBrandName" placeholder="Minha Live" maxlength="40">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-label">Subtítulo do cabeçalho</label>
+                            <input type="text" class="admin-input" data-site="siteBrandSub" placeholder="Transmissão ao vivo" maxlength="50">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-label">Texto do countdown</label>
+                            <input type="text" class="admin-input" data-site="siteCountdownLabel" placeholder="Próxima Live: Hoje às 19:00" maxlength="60">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-label">Horário da live</label>
+                            <input type="time" class="admin-input" data-site="siteTime" value="19:00">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-label">Título do preview</label>
+                            <input type="text" class="admin-input" data-site="sitePreviewTitle" placeholder="A live começa em breve" maxlength="60">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-label">Subtítulo do preview</label>
+                            <input type="text" class="admin-input" data-site="sitePreviewSubtitle" placeholder="Confirme sua presença abaixo!" maxlength="80">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-label">Título da seção de presença</label>
+                            <input type="text" class="admin-input" data-site="sitePresenceTitle" placeholder="Confirme sua Presença" maxlength="50">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-label">Subtítulo da presença</label>
+                            <input type="text" class="admin-input" data-site="sitePresenceSubtitle" placeholder="Mostre que você vai estar na live!" maxlength="80">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-label">Título do chat</label>
+                            <input type="text" class="admin-input" data-site="siteChatTitle" placeholder="Chat da Live" maxlength="40">
+                        </div>
+                        <div class="editor-field">
+                            <label class="editor-label">Nome no rodapé</label>
+                            <input type="text" class="admin-input" data-site="siteFooterBrand" placeholder="Minha Live" maxlength="40">
+                        </div>
+                        <div class="editor-field editor-field--full">
+                            <label class="editor-label">Texto do rodapé</label>
+                            <input type="text" class="admin-input" data-site="siteFooterCopy" placeholder="© 2025 Todos os direitos reservados." maxlength="100">
+                        </div>
+                    </div>
+
+                    <button id="saveContent" class="btn btn-success btn-full">
+                        <i class="fas fa-save"></i> Salvar Alterações
+                    </button>
+                </div>
 
                 <!-- Link da Live -->
                 <div class="admin-section">
@@ -302,9 +377,9 @@
             <div class="footer-inner">
                 <div class="footer-brand">
                     <i class="fas fa-broadcast-tower"></i>
-                    <span>Minha Live</span>
+                    <span id="siteFooterBrand">Minha Live</span>
                 </div>
-                <p class="footer-copy">&copy; 2025 Todos os direitos reservados.</p>
+                <p class="footer-copy" id="siteFooterCopy">&copy; 2025 Todos os direitos reservados.</p>
             </div>
         </div>
     </footer>

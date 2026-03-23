@@ -1375,6 +1375,122 @@ body {
     color: var(--text-dim);
 }
 
+/* ===== CONTENT EDITOR ===== */
+.editor-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.editor-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.editor-field--full {
+    grid-column: 1 / -1;
+}
+
+.editor-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-full {
+    width: 100%;
+    justify-content: center;
+}
+
+/* Upload zone */
+.upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 0;
+    cursor: pointer;
+    transition: var(--transition);
+    background: var(--bg-input);
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.upload-zone:hover,
+.upload-zone.drag-over {
+    border-color: var(--accent);
+    background: rgba(124, 58, 237, 0.08);
+}
+
+.upload-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 24px 16px;
+    text-align: center;
+    color: var(--text-muted);
+    transition: var(--transition);
+}
+
+.upload-inner i {
+    font-size: 2rem;
+    color: var(--accent);
+}
+
+.upload-inner span {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.upload-inner small {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+}
+
+.upload-zone.has-image .upload-inner {
+    display: none;
+}
+
+.upload-zone img.upload-preview {
+    width: 100%;
+    max-height: 140px;
+    object-fit: cover;
+    display: block;
+}
+
+.btn-remove-img {
+    background: rgba(239, 68, 68, 0.1);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    border-radius: var(--radius-sm);
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: inherit;
+    transition: var(--transition);
+    margin-bottom: 16px;
+}
+
+.btn-remove-img:hover {
+    background: rgba(239, 68, 68, 0.2);
+}
+
+@media (max-width: 640px) {
+    .editor-grid {
+        grid-template-columns: 1fr;
+    }
+    .editor-field--full {
+        grid-column: 1;
+    }
+}
+
 /* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }

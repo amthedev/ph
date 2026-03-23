@@ -17,12 +17,15 @@ class LiveStreamApp {
         this.lastMsgId = 0;
         this.chatPollInterval = null;
         this.backendAvailable = false;
+        this.liveHour = 19;
+        this.liveMinute = 0;
 
         this.init();
     }
 
     init() {
         this.loadStoredData();
+        this.applySiteConfig();
         this.setupEventListeners();
         this.startCountdown();
         this.checkAdminAccess();
@@ -159,6 +162,16 @@ class LiveStreamApp {
             if (e.key === 'Enter') this.handleSetUrl();
         });
 
+        // Editor de conteúdo
+        document.getElementById('saveContent').addEventListener('click', () => this.saveContent());
+        document.getElementById('uploadZone').addEventListener('click', () => document.getElementById('imageUpload').click());
+        document.getElementById('imageUpload').addEventListener('change', (e) => this.handleImageUpload(e));
+        document.getElementById('removeImage').addEventListener('click', () => this.removePreviewImage());
+        const zone = document.getElementById('uploadZone');
+        zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
+        zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+        zone.addEventListener('drop', (e) => { e.preventDefault(); zone.classList.remove('drag-over'); if (e.dataTransfer.files[0]) this.processImageFile(e.dataTransfer.files[0]); });
+
         // Presença
         document.getElementById('confirmPresence').addEventListener('click', () => this.confirmPresence());
         document.getElementById('removePresence').addEventListener('click', () => this.removePresence());
@@ -201,11 +214,9 @@ class LiveStreamApp {
         modal.classList.add('active');
         this.renderViewerGrid();
         this.updateAdminStats();
-        // Restaurar URL salva
         const savedUrl = localStorage.getItem('liveUrl');
-        if (savedUrl) {
-            document.getElementById('liveUrlInput').value = savedUrl;
-        }
+        if (savedUrl) document.getElementById('liveUrlInput').value = savedUrl;
+        this.fillEditorFields();
     }
 
     closeAdminPanel() {
@@ -418,7 +429,7 @@ class LiveStreamApp {
         const tick = () => {
             const now = new Date();
             let target = new Date();
-            target.setHours(19, 0, 0, 0);
+            target.setHours(this.liveHour, this.liveMinute, 0, 0);
 
             if (now >= target) {
                 target.setDate(target.getDate() + 1);
@@ -712,6 +723,154 @@ class LiveStreamApp {
         }
 
         this.updatePresenceUI();
+    }
+
+    // =====================
+    // EDITOR DE CONTEÚDO
+    // =====================
+
+    // Mapeamento: chave -> ID do elemento no DOM
+    get siteFields() {
+        return {
+            siteBrandName:        { id: 'siteBrandName',        prop: 'textContent' },
+            siteBrandSub:         { id: 'siteBrandSub',         prop: 'textContent' },
+            siteCountdownLabel:   { id: 'siteCountdownLabel',   prop: 'textContent' },
+            sitePreviewTitle:     { id: 'sitePreviewTitle',     prop: 'textContent' },
+            sitePreviewSubtitle:  { id: 'sitePreviewSubtitle',  prop: 'textContent' },
+            sitePresenceTitle:    { id: 'sitePresenceTitle',    prop: 'textContent' },
+            sitePresenceSubtitle: { id: 'sitePresenceSubtitle', prop: 'textContent' },
+            siteChatTitle:        { id: 'siteChatTitle',        prop: 'textContent' },
+            siteFooterBrand:      { id: 'siteFooterBrand',      prop: 'textContent' },
+            siteFooterCopy:       { id: 'siteFooterCopy',       prop: 'textContent' },
+        };
+    }
+
+    applySiteConfig() {
+        const config = this.loadSiteConfig();
+
+        // Textos
+        Object.entries(this.siteFields).forEach(([key, field]) => {
+            const el = document.getElementById(field.id);
+            if (el && config[key]) el[field.prop] = config[key];
+        });
+
+        // Horário da live
+        if (config.siteTime) {
+            const [h, m] = config.siteTime.split(':').map(Number);
+            this.liveHour = isNaN(h) ? 19 : h;
+            this.liveMinute = isNaN(m) ? 0 : m;
+        }
+
+        // Imagem de fundo
+        if (config.previewImage) {
+            const img = document.querySelector('.preview-image');
+            if (img) { img.src = config.previewImage; img.style.display = 'block'; }
+        }
+    }
+
+    fillEditorFields() {
+        const config = this.loadSiteConfig();
+
+        // Preencher inputs de texto
+        document.querySelectorAll('[data-site]').forEach(input => {
+            const key = input.dataset.site;
+            if (config[key] !== undefined) {
+                input.value = config[key];
+            } else {
+                // Valor atual do DOM como placeholder value
+                const field = this.siteFields[key];
+                if (field) {
+                    const el = document.getElementById(field.id);
+                    if (el) input.value = el[field.prop] || '';
+                }
+            }
+        });
+
+        // Imagem
+        if (config.previewImage) {
+            this.showUploadPreview(config.previewImage);
+        }
+    }
+
+    saveContent() {
+        const config = this.loadSiteConfig();
+
+        // Coletar valores dos inputs
+        document.querySelectorAll('[data-site]').forEach(input => {
+            const key = input.dataset.site;
+            const val = input.value.trim();
+            if (val) config[key] = val;
+        });
+
+        this.saveSiteConfig(config);
+        this.applySiteConfig();
+        this.showToast('Alterações salvas com sucesso!', 'success');
+    }
+
+    handleImageUpload(e) {
+        const file = e.target.files[0];
+        if (file) this.processImageFile(file);
+        e.target.value = '';
+    }
+
+    processImageFile(file) {
+        if (!file.type.startsWith('image/')) {
+            this.showToast('Selecione um arquivo de imagem válido', 'error');
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const base64 = ev.target.result;
+            const config = this.loadSiteConfig();
+            config.previewImage = base64;
+            this.saveSiteConfig(config);
+            this.showUploadPreview(base64);
+            // Aplicar imediatamente no preview
+            const img = document.querySelector('.preview-image');
+            if (img) { img.src = base64; img.style.display = 'block'; }
+            this.showToast('Imagem definida!', 'success');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    showUploadPreview(base64) {
+        const zone = document.getElementById('uploadZone');
+        zone.classList.add('has-image');
+        // Remover preview anterior
+        const old = zone.querySelector('img.upload-preview');
+        if (old) old.remove();
+        const img = document.createElement('img');
+        img.src = base64;
+        img.className = 'upload-preview';
+        img.alt = 'Preview';
+        zone.appendChild(img);
+        document.getElementById('removeImage').style.display = 'inline-flex';
+    }
+
+    removePreviewImage() {
+        const config = this.loadSiteConfig();
+        delete config.previewImage;
+        this.saveSiteConfig(config);
+        // Resetar zona de upload
+        const zone = document.getElementById('uploadZone');
+        zone.classList.remove('has-image');
+        const old = zone.querySelector('img.upload-preview');
+        if (old) old.remove();
+        document.getElementById('removeImage').style.display = 'none';
+        // Resetar imagem do preview
+        const img = document.querySelector('.preview-image');
+        if (img) { img.src = "ChatGPT Image 23 de mar. de 2026, 15_47_58.png"; }
+        this.showToast('Imagem removida', 'info');
+    }
+
+    loadSiteConfig() {
+        try {
+            return JSON.parse(localStorage.getItem('siteConfig') || '{}');
+        } catch (_) { return {}; }
+    }
+
+    saveSiteConfig(config) {
+        localStorage.setItem('siteConfig', JSON.stringify(config));
     }
 
     // =====================
