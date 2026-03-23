@@ -1416,6 +1416,17 @@ body {
     background: var(--bg-input);
     overflow: hidden;
     margin-bottom: 8px;
+    position: relative;
+}
+
+.upload-input-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
 }
 
 .upload-zone:hover,
@@ -1459,6 +1470,8 @@ body {
     max-height: 140px;
     object-fit: cover;
     display: block;
+    position: relative;
+    z-index: 1;
 }
 
 .btn-remove-img {

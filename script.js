@@ -164,7 +164,6 @@ class LiveStreamApp {
 
         // Editor de conteúdo
         document.getElementById('saveContent').addEventListener('click', () => this.saveContent());
-        document.getElementById('uploadZone').addEventListener('click', () => document.getElementById('imageUpload').click());
         document.getElementById('imageUpload').addEventListener('change', (e) => this.handleImageUpload(e));
         document.getElementById('removeImage').addEventListener('click', () => this.removePreviewImage());
         const zone = document.getElementById('uploadZone');
