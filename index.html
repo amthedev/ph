@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Live</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Fundo animado -->
+    <div class="bg-orbs">
+        <div class="orb orb1"></div>
+        <div class="orb orb2"></div>
+        <div class="orb orb3"></div>
+    </div>
+
+    <header class="header">
+        <div class="container">
+            <div class="header-brand">
+                <div class="brand-icon">
+                    <i class="fas fa-broadcast-tower"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-name">Minha Live</span>
+                    <span class="brand-sub">Transmissão ao vivo</span>
+                </div>
+            </div>
+            <nav class="header-nav">
+                <button id="adminBtn" class="admin-btn" style="display: none;">
+                    <i class="fas fa-cog"></i>
+                    <span>Admin</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+
+            <!-- Hero: Status + Countdown -->
+            <section class="hero-section">
+                <div class="status-row">
+                    <div class="status-indicator" id="statusIndicator">
+                        <span class="status-dot offline" id="statusDot"></span>
+                        <span class="status-text" id="statusText">Live Offline</span>
+                    </div>
+                    <div class="viewers-live-badge" id="viewersBadge" style="display:none;">
+                        <i class="fas fa-eye"></i>
+                        <span id="viewerCountBadge">0</span>
+                        <span>ao vivo</span>
+                    </div>
+                </div>
+
+                <div class="countdown-section">
+                    <p class="countdown-label" id="countdownLabel">Próxima Live: Hoje às 19:00</p>
+                    <div class="countdown" id="countdown">
+                        <div class="time-block">
+                            <span class="time-value" id="hours">00</span>
+                            <span class="time-label">Horas</span>
+                        </div>
+                        <span class="separator">:</span>
+                        <div class="time-block">
+                            <span class="time-value" id="minutes">00</span>
+                            <span class="time-label">Minutos</span>
+                        </div>
+                        <span class="separator">:</span>
+                        <div class="time-block">
+                            <span class="time-value" id="seconds">00</span>
+                            <span class="time-label">Segundos</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Player da Live -->
+            <section class="live-preview">
+                <div class="video-wrapper">
+                    <!-- Preview (offline) -->
+                    <div id="videoPreview" class="video-placeholder">
+                        <img src="ChatGPT Image 23 de mar. de 2026, 15_47_58.png" alt="Preview" class="preview-image" onerror="this.style.display='none'">
+                        <div class="preview-overlay"></div>
+                        <div class="preview-content">
+                            <div class="preview-play-btn">
+                                <i class="fas fa-play"></i>
+                            </div>
+                            <h3>A live começa em breve</h3>
+                            <p>Confirme sua presença abaixo!</p>
+                        </div>
+                    </div>
+
+                    <!-- Live ativa -->
+                    <div id="liveVideo" class="live-video" style="display: none;">
+                        <div id="liveMediaContainer" class="live-media-container">
+                            <!-- iframe ou img inserido aqui dinamicamente -->
+                        </div>
+                        <div class="live-overlay-top">
+                            <div class="live-badge-wrapper">
+                                <span class="live-badge">
+                                    <span class="live-dot-anim"></span>
+                                    AO VIVO
+                                </span>
+                            </div>
+                        </div>
+                        <div class="live-overlay-bottom">
+                            <span class="viewer-count-live">
+                                <i class="fas fa-eye"></i>
+                                <span id="viewerCountLive">0</span> espectadores
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Grade: Presença + Chat -->
+            <div class="content-grid">
+
+                <!-- Presença -->
+                <section class="presence-section">
+                    <div class="glass-card">
+                        <div class="card-header-icon">
+                            <i class="fas fa-users"></i>
+                            <h3>Confirme sua Presença</h3>
+                        </div>
+                        <p class="card-subtitle">Mostre que você vai estar na live!</p>
+
+                        <div class="name-input-wrapper" id="nameInputWrapper">
+                            <input
+                                type="text"
+                                id="userName"
+                                placeholder="Como você quer ser chamado? (opcional)"
+                                maxlength="30"
+                                class="name-input"
+                            >
+                        </div>
+
+                        <div class="presence-buttons">
+                            <button id="confirmPresence" class="btn btn-primary btn-glow">
+                                <i class="fas fa-heart"></i> Vou Assistir!
+                            </button>
+                            <button id="removePresence" class="btn btn-outline-danger" style="display: none;">
+                                <i class="fas fa-times"></i> Cancelar
+                            </button>
+                        </div>
+
+                        <div class="presence-stats">
+                            <div class="stat-item">
+                                <span class="stat-number" id="confirmedCount">0</span>
+                                <span class="stat-label">Confirmados</span>
+                            </div>
+                            <div class="stat-divider"></div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="onlineCount">0</span>
+                                <span class="stat-label">Online Agora</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Chat -->
+                <section class="chat-section">
+                    <div class="glass-card chat-card">
+                        <div class="chat-header">
+                            <div class="chat-title">
+                                <i class="fas fa-comments"></i>
+                                <h3>Chat da Live</h3>
+                            </div>
+                            <span class="online-badge" id="chatOnline">0 online</span>
+                        </div>
+                        <div class="chat-messages" id="chatMessages">
+                            <div class="chat-message system">
+                                <i class="fas fa-star"></i>
+                                <span>Bem-vindo ao chat! 👋</span>
+                            </div>
+                        </div>
+                        <div class="chat-input-area">
+                            <input
+                                type="text"
+                                id="messageInput"
+                                placeholder="Escreva uma mensagem..."
+                                maxlength="200"
+                            >
+                            <button id="sendMessage" class="send-btn">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Admin -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title-wrap">
+                    <div class="modal-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <div>
+                        <h2>Painel Admin</h2>
+                        <p>Gerencie sua transmissão</p>
+                    </div>
+                </div>
+                <button class="close-btn" id="closeAdmin">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <!-- Link da Live -->
+                <div class="admin-section">
+                    <div class="section-title">
+                        <i class="fas fa-link"></i>
+                        <h3>Link da Live / Imagem</h3>
+                    </div>
+                    <div class="input-group">
+                        <input
+                            type="url"
+                            id="liveUrlInput"
+                            placeholder="Cole o link do YouTube, Twitch ou URL de imagem..."
+                            class="admin-input"
+                        >
+                        <button id="setLiveUrl" class="btn btn-primary">
+                            <i class="fas fa-check"></i> Definir
+                        </button>
+                    </div>
+                    <p class="hint">
+                        <i class="fas fa-lightbulb"></i>
+                        YouTube (watch, youtu.be, /live/), Twitch, ou link de imagem (jpg, png, gif…)
+                    </p>
+                    <div id="linkPreview" class="link-preview" style="display:none;"></div>
+                </div>
+
+                <!-- Controles -->
+                <div class="admin-section">
+                    <div class="section-title">
+                        <i class="fas fa-play-circle"></i>
+                        <h3>Controle da Live</h3>
+                    </div>
+                    <div class="control-buttons">
+                        <button id="startLive" class="btn btn-success">
+                            <i class="fas fa-play"></i> Iniciar Live
+                        </button>
+                        <button id="stopLive" class="btn btn-danger" disabled>
+                            <i class="fas fa-stop"></i> Encerrar Live
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Espectadores -->
+                <div class="admin-section">
+                    <div class="section-title">
+                        <i class="fas fa-users"></i>
+                        <h3>Espectadores Confirmados</h3>
+                    </div>
+                    <div class="viewer-grid" id="viewerGrid">
+                        <div class="empty-state">
+                            <i class="fas fa-user-clock"></i>
+                            <p>Nenhum espectador confirmado ainda</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estatísticas -->
+                <div class="admin-section">
+                    <div class="section-title">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Estatísticas</h3>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <i class="fas fa-users stat-icon"></i>
+                            <span class="stat-value" id="totalViews">0</span>
+                            <span class="stat-desc">Confirmados</span>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-fire stat-icon"></i>
+                            <span class="stat-value" id="peakViewers">0</span>
+                            <span class="stat-desc">Pico Online</span>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-clock stat-icon"></i>
+                            <span class="stat-value" id="avgDuration">0m</span>
+                            <span class="stat-desc">Duração</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast de notificações -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <div class="footer-brand">
+                    <i class="fas fa-broadcast-tower"></i>
+                    <span>Minha Live</span>
+                </div>
+                <p class="footer-copy">&copy; 2025 Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
