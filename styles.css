@@ -1,3 +1,338 @@
+/* ===== HACK THEME ===== */
+
+/* Banner correndo no topo */
+.hack-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #00ff41;
+    color: #000;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 4px 0;
+    z-index: 99999;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    box-shadow: 0 0 20px #00ff41;
+}
+
+/* Overlay de entrada */
+.hack-overlay {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    transition: opacity 0.5s ease;
+}
+
+.hack-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.hack-content {
+    text-align: center;
+    max-width: 700px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.skull-row {
+    font-size: 3rem;
+    animation: skullBounce 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes skullBounce {
+    from { transform: scale(1); }
+    to { transform: scale(1.15); }
+}
+
+.hack-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(1.4rem, 5vw, 2.8rem);
+    font-weight: 900;
+    color: #ff0000;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    text-shadow: 0 0 20px #ff0000, 0 0 40px #ff000066;
+}
+
+.hack-by {
+    font-family: 'Share Tech Mono', monospace;
+    color: #888;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+}
+
+.hacker-name {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(1.6rem, 6vw, 3.5rem);
+    font-weight: 900;
+    color: #00ff41;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 20px #00ff41, 0 0 60px #00ff4166;
+    line-height: 1.1;
+}
+
+.hack-msg {
+    background: rgba(0,255,65,0.06);
+    border: 1px solid #00ff4133;
+    border-radius: 8px;
+    padding: 14px 24px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.9rem;
+    color: #00ff41;
+    width: 100%;
+    text-align: left;
+    min-height: 48px;
+}
+
+.prompt {
+    color: #ff0;
+    margin-right: 8px;
+}
+
+.typing::after {
+    content: '█';
+    animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.hack-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.1rem;
+    color: #ff6b6b;
+    letter-spacing: 1px;
+}
+
+.btn-enter-site {
+    margin-top: 8px;
+    background: transparent;
+    border: 2px solid #00ff41;
+    color: #00ff41;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1rem;
+    padding: 14px 32px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+}
+
+.btn-enter-site:hover {
+    background: #00ff41;
+    color: #000;
+    box-shadow: 0 0 30px #00ff41;
+    transform: scale(1.03);
+}
+
+/* Glitch effect nos textos */
+.glitch {
+    position: relative;
+    animation: glitchAnim 2.5s infinite;
+}
+
+.glitch::before,
+.glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    overflow: hidden;
+}
+
+.glitch::before {
+    color: #0ff;
+    animation: glitchTop 2.5s infinite;
+    clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+    transform: translateX(-3px);
+}
+
+.glitch::after {
+    color: #f0f;
+    animation: glitchBot 2.5s infinite;
+    clip-path: polygon(0 66%, 100% 66%, 100% 100%, 0 100%);
+    transform: translateX(3px);
+}
+
+@keyframes glitchAnim {
+    0%, 90%, 100% { transform: translate(0); }
+    91% { transform: translate(-2px, 1px); }
+    93% { transform: translate(2px, -1px); }
+    95% { transform: translate(-1px, 2px); }
+}
+
+@keyframes glitchTop {
+    0%, 90%, 100% { transform: translateX(-3px); opacity: 1; }
+    91% { transform: translateX(3px); opacity: 0.8; }
+    92% { transform: translateX(-5px); }
+}
+
+@keyframes glitchBot {
+    0%, 90%, 100% { transform: translateX(3px); opacity: 1; }
+    91% { transform: translateX(-3px); opacity: 0.8; }
+    92% { transform: translateX(5px); }
+}
+
+.glitch2 {
+    position: relative;
+    animation: glitch2Anim 1.8s infinite;
+}
+
+.glitch2::before,
+.glitch2::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0; top: 0;
+    width: 100%;
+}
+
+.glitch2::before {
+    color: #f00;
+    animation: glitchTop 1.5s infinite;
+    clip-path: polygon(0 20%, 100% 20%, 100% 60%, 0 60%);
+}
+
+.glitch2::after {
+    color: #ff0;
+    animation: glitchBot 1.8s infinite;
+    clip-path: polygon(0 65%, 100% 65%, 100% 90%, 0 90%);
+}
+
+@keyframes glitch2Anim {
+    0%, 85%, 100% { transform: skewX(0deg); }
+    86% { transform: skewX(-5deg); }
+    88% { transform: skewX(4deg); }
+}
+
+/* Glitch leve nos textos do site */
+.glitch-text {
+    animation: glitchTextLight 4s infinite;
+    display: inline-block;
+}
+
+@keyframes glitchTextLight {
+    0%, 94%, 100% { transform: translate(0); filter: none; }
+    95% { transform: translate(-2px, 0); filter: hue-rotate(90deg); }
+    96% { transform: translate(2px, 0); filter: hue-rotate(180deg); }
+    97% { transform: translate(0, 1px); filter: none; }
+}
+
+/* Tema hack geral no body */
+body.hacked {
+    padding-top: 32px; /* espaço pro banner */
+}
+
+body.hacked .header {
+    top: 28px;
+    border-bottom-color: rgba(0,255,65,0.2);
+}
+
+body.hacked .brand-icon {
+    background: linear-gradient(135deg, #ff0000, #880000);
+    box-shadow: 0 0 20px rgba(255,0,0,0.5);
+    animation: iconGlow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes iconGlow {
+    from { box-shadow: 0 0 10px rgba(255,0,0,0.4); }
+    to { box-shadow: 0 0 30px rgba(255,0,0,0.9); }
+}
+
+body.hacked .brand-name {
+    color: #00ff41 !important;
+    text-shadow: 0 0 10px #00ff4166;
+    font-family: 'Share Tech Mono', monospace !important;
+}
+
+body.hacked .brand-sub {
+    color: #ff6b6b !important;
+    font-family: 'Share Tech Mono', monospace !important;
+}
+
+body.hacked .time-block {
+    background: rgba(255, 0, 0, 0.12);
+    border-color: rgba(255,0,0,0.3);
+}
+
+body.hacked .time-value {
+    color: #ff4444;
+    text-shadow: 0 0 12px rgba(255,0,0,0.5);
+    font-family: 'Share Tech Mono', monospace;
+}
+
+body.hacked .separator {
+    color: #ff4444;
+    text-shadow: 0 0 8px rgba(255,0,0,0.4);
+}
+
+body.hacked .stat-number {
+    color: #ff4444;
+}
+
+body.hacked .btn-primary,
+body.hacked .btn-glow {
+    background: linear-gradient(135deg, #ff0000, #880000) !important;
+    box-shadow: 0 4px 20px rgba(255,0,0,0.4) !important;
+    animation: btnGlitch 3s infinite !important;
+}
+
+@keyframes btnGlitch {
+    0%, 90%, 100% { transform: translate(0); }
+    91% { transform: translate(-2px, 1px); }
+    93% { transform: translate(1px, -1px); }
+}
+
+body.hacked .orb1 { background: #ff0000; opacity: 0.2; }
+body.hacked .orb2 { background: #00ff41; opacity: 0.12; }
+body.hacked .orb3 { background: #ff0000; opacity: 0.08; }
+
+body.hacked .hero-section,
+body.hacked .glass-card,
+body.hacked .chat-container {
+    border-color: rgba(255,0,0,0.2);
+}
+
+body.hacked .chat-header {
+    background: rgba(255,0,0,0.08);
+    border-bottom-color: rgba(255,0,0,0.2);
+}
+
+body.hacked .online-badge {
+    background: rgba(255,0,0,0.15);
+    border-color: rgba(255,0,0,0.3);
+    color: #ff6b6b;
+}
+
+body.hacked .send-btn {
+    background: linear-gradient(135deg, #ff0000, #cc0000);
+}
+
+body.hacked .footer {
+    border-top-color: rgba(0,255,65,0.2);
+}
+
+body.hacked .footer-brand {
+    color: #00ff41;
+    text-shadow: 0 0 8px #00ff4144;
+}
+
 /* ===== RESET & BASE ===== */
 *, *::before, *::after {
     margin: 0;

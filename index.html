@@ -3,17 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minha Live</title>
+    <title>☠️ HACKEADO POR JUNINHO ☠️</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="hacked">
+
+    <!-- MATRIX RAIN -->
+    <canvas id="matrixCanvas" style="position:fixed;top:0;left:0;z-index:0;pointer-events:none;opacity:0.13;"></canvas>
+
+    <!-- OVERLAY DE HACK -->
+    <div id="hackOverlay" class="hack-overlay">
+        <div class="hack-content">
+            <div class="skull-row">💀 💀 💀</div>
+            <div class="hack-title glitch" data-text="SISTEMA COMPROMETIDO">SISTEMA COMPROMETIDO</div>
+            <div class="hack-by">hackeado por</div>
+            <div class="hacker-name glitch2" data-text="JUNINHO MATADOR DE PORCO">JUNINHO MATADOR DE PORCO</div>
+            <div class="hack-msg">
+                <span class="terminal-line">
+                    <span class="prompt">root@juninho:~#</span>
+                    <span class="typing" id="terminalTyping"></span>
+                </span>
+            </div>
+            <div class="hack-sub">PH seu site tá uma bosta agora 💀🐷</div>
+            <button class="btn-enter-site" id="enterSite">
+                [ entrar no site destruído ]
+            </button>
+        </div>
+    </div>
+
     <!-- Fundo animado -->
     <div class="bg-orbs">
         <div class="orb orb1"></div>
         <div class="orb orb2"></div>
         <div class="orb orb3"></div>
+    </div>
+
+    <!-- BANNER DE HACK FIXO -->
+    <div class="hack-banner">
+        <marquee>☠️ &nbsp; ESTE SITE FOI HACKEADO POR JUNINHO MATADOR DE PORCO &nbsp; 🐷 &nbsp; PH VOCÊ É O MAIS FRACO &nbsp; 💀 &nbsp; SEGURANÇA NÍVEL ZERO &nbsp; 🔓 &nbsp; JUNINHO DOMINA &nbsp; ☠️ &nbsp;&nbsp;</marquee>
     </div>
 
     <header class="header">
@@ -23,8 +52,8 @@
                     <i class="fas fa-broadcast-tower"></i>
                 </div>
                 <div class="brand-text">
-                    <span class="brand-name" id="siteBrandName">Minha Live</span>
-                    <span class="brand-sub" id="siteBrandSub">Transmissão ao vivo</span>
+                    <span class="brand-name glitch-text" id="siteBrandName">☠️ Live do PH Hackeada</span>
+                    <span class="brand-sub" id="siteBrandSub">propriedade de JUNINHO MATADOR DE PORCO</span>
                 </div>
             </div>
             <nav class="header-nav">
@@ -54,7 +83,7 @@
                 </div>
 
                 <div class="countdown-section">
-                    <p class="countdown-label" id="siteCountdownLabel">Próxima Live: Hoje às 19:00</p>
+                    <p class="countdown-label" id="siteCountdownLabel">⏳ Tempo até o PH perceber que foi hackeado</p>
                     <div class="countdown" id="countdown">
                         <div class="time-block">
                             <span class="time-value" id="hours">00</span>
@@ -85,8 +114,8 @@
                             <div class="preview-play-btn">
                                 <i class="fas fa-play"></i>
                             </div>
-                            <h3 id="sitePreviewTitle">A live começa em breve</h3>
-                            <p id="sitePreviewSubtitle">Confirme sua presença abaixo!</p>
+                            <h3 id="sitePreviewTitle" class="glitch-text">DOMÍNIO CONQUISTADO 🐷</h3>
+                            <p id="sitePreviewSubtitle">juninho matador de porco esteve aqui</p>
                         </div>
                     </div>
 
@@ -121,9 +150,9 @@
                     <div class="glass-card">
                         <div class="card-header-icon">
                             <i class="fas fa-users"></i>
-                            <h3 id="sitePresenceTitle">Confirme sua Presença</h3>
+                            <h3 id="sitePresenceTitle">☠️ Confirme que você viu o hack</h3>
                         </div>
-                        <p class="card-subtitle" id="sitePresenceSubtitle">Mostre que você vai estar na live!</p>
+                        <p class="card-subtitle" id="sitePresenceSubtitle">Manda print pro PH e fala que o Juninho passou aqui 🐷</p>
 
                         <div class="name-input-wrapper" id="nameInputWrapper">
                             <input
@@ -137,7 +166,7 @@
 
                         <div class="presence-buttons">
                             <button id="confirmPresence" class="btn btn-primary btn-glow">
-                                <i class="fas fa-heart"></i> Vou Assistir!
+                                🐷 Vi o hack do Juninho!
                             </button>
                             <button id="removePresence" class="btn btn-outline-danger" style="display: none;">
                                 <i class="fas fa-times"></i> Cancelar
@@ -164,7 +193,7 @@
                         <div class="chat-header">
                             <div class="chat-title">
                                 <i class="fas fa-comments"></i>
-                                <h3 id="siteChatTitle">Chat da Live</h3>
+                                <h3 id="siteChatTitle">💬 Chat Hackeado™</h3>
                             </div>
                             <span class="online-badge" id="chatOnline">0 online</span>
                         </div>
@@ -376,10 +405,10 @@
         <div class="container">
             <div class="footer-inner">
                 <div class="footer-brand">
-                    <i class="fas fa-broadcast-tower"></i>
-                    <span id="siteFooterBrand">Minha Live</span>
+                    <i class="fas fa-skull"></i>
+                    <span id="siteFooterBrand">☠️ Juninho Matador de Porco™</span>
                 </div>
-                <p class="footer-copy" id="siteFooterCopy">&copy; 2025 Todos os direitos reservados.</p>
+                <p class="footer-copy" id="siteFooterCopy">© 2025 Hackeado. PH chora não 🐷💀</p>
             </div>
         </div>
     </footer>

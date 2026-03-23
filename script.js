@@ -897,4 +897,99 @@ class LiveStreamApp {
 // Inicializar
 document.addEventListener('DOMContentLoaded', () => {
     window.app = new LiveStreamApp();
+    initHackMode();
 });
+
+// =====================
+// MODO HACKEADO 💀🐷
+// =====================
+function initHackMode() {
+    matrixRain();
+    typeTerminal();
+
+    document.getElementById('enterSite').addEventListener('click', () => {
+        const overlay = document.getElementById('hackOverlay');
+        overlay.classList.add('hidden');
+        setTimeout(() => { overlay.style.display = 'none'; }, 500);
+
+        // Mandar mensagem automática no chat ao entrar
+        setTimeout(() => {
+            if (window.app) {
+                window.app.addSystemMessage('☠️ Juninho Matador de Porco dominou este servidor. PH se liga! 🐷');
+            }
+        }, 1200);
+    });
+}
+
+function typeTerminal() {
+    const el = document.getElementById('terminalTyping');
+    const lines = [
+        'ssh root@site-do-ph.com.br',
+        'Password: ******** [ACCESS GRANTED]',
+        'rm -rf /credibilidade/ph/*',
+        'echo "Juninho esteve aqui" > /etc/motd',
+        'cat /home/ph/segredos.txt',
+        '> "ph nao sabe fazer site kkkkkk"',
+        'chmod 000 /ph/reputacao',
+        'Hack completo. PH chora não. 🐷💀',
+    ];
+    let lineIdx = 0, charIdx = 0;
+    let current = '';
+
+    function type() {
+        if (lineIdx >= lines.length) {
+            lineIdx = 0; current = '';
+        }
+        const line = lines[lineIdx];
+        if (charIdx < line.length) {
+            current += line[charIdx];
+            el.textContent = current;
+            charIdx++;
+            setTimeout(type, 45 + Math.random() * 40);
+        } else {
+            lineIdx++;
+            charIdx = 0;
+            setTimeout(() => { current = ''; type(); }, 900);
+        }
+    }
+    type();
+}
+
+function matrixRain() {
+    const canvas = document.getElementById('matrixCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const chars = 'ジュニーニョマタドールデポルコPHHACKEADO01アイウエオカキクケコ☠🐷';
+    const fontSize = 14;
+    let cols = Math.floor(canvas.width / fontSize);
+    const drops = Array(cols).fill(1);
+
+    function draw() {
+        ctx.fillStyle = 'rgba(0,0,0,0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = '#00ff41';
+        ctx.font = fontSize + 'px Share Tech Mono, monospace';
+
+        cols = Math.floor(canvas.width / fontSize);
+        while (drops.length < cols) drops.push(1);
+
+        for (let i = 0; i < cols; i++) {
+            const char = chars[Math.floor(Math.random() * chars.length)];
+            ctx.fillStyle = drops[i] * fontSize < canvas.height * 0.3 ? '#fff' : '#00ff41';
+            ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
+        }
+    }
+
+    setInterval(draw, 40);
+}
