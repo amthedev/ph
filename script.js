@@ -122,11 +122,6 @@ class LiveStreamApp {
             <div class="msg-text">${this.escapeHtml(msg.message)}</div>`;
 
         container.appendChild(div);
-
-        // Máximo 80 mensagens visíveis
-        while (container.children.length > 80) {
-            container.removeChild(container.firstChild);
-        }
     }
 
     async adminLogin(password) {
@@ -474,7 +469,6 @@ class LiveStreamApp {
         }
 
         this.showToast('Presença confirmada! Te esperamos na live! 🎉', 'success');
-        this.addSystemMessage(`${this.currentUserName} confirmou presença! 🎉`);
 
         // Backend (sem bloquear)
         this.apiRequest('/viewer', {
@@ -631,11 +625,6 @@ class LiveStreamApp {
 
         container.appendChild(div);
         container.scrollTop = container.scrollHeight;
-
-        // Máximo 60 mensagens
-        while (container.children.length > 60) {
-            container.removeChild(container.firstChild);
-        }
     }
 
     addSystemMessage(text) {
